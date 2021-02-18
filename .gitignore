@@ -15,8 +15,3 @@ target/
 
 # Project Dependencies
 lib/
-
-# Intellij
-.idea/
-*.iml
-*.iws
