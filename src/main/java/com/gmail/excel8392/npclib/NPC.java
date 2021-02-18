@@ -3,21 +3,8 @@ package com.gmail.excel8392.npclib;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import net.minecraft.server.v1_16_R3.DataWatcher;
-import net.minecraft.server.v1_16_R3.DataWatcherObject;
-import net.minecraft.server.v1_16_R3.DataWatcherRegistry;
-import net.minecraft.server.v1_16_R3.EntityPlayer;
-import net.minecraft.server.v1_16_R3.EnumProtocolDirection;
-import net.minecraft.server.v1_16_R3.MinecraftServer;
-import net.minecraft.server.v1_16_R3.NetworkManager;
-import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_16_R3.PacketPlayOutEntityHeadRotation;
-import net.minecraft.server.v1_16_R3.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_16_R3.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_16_R3.PlayerConnection;
-import net.minecraft.server.v1_16_R3.PlayerInteractManager;
-import net.minecraft.server.v1_16_R3.WorldServer;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
@@ -26,6 +13,9 @@ import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class NPC {
@@ -41,8 +31,9 @@ public class NPC {
     private final boolean showName;
     private boolean shown;
     private final boolean persistent;
+    private final List<Pair<EnumItemSlot, ItemStack>> equipmentList = new ArrayList<>();
 
-    public NPC(Location location, NPCSkin skin, Integer id, String uuid, String name, boolean showName, boolean shown, boolean persistent) {
+    public NPC(Location location, NPCSkin skin, Integer id, String uuid, String name, boolean showName, boolean shown, boolean persistent, Pair<EnumItemSlot, ItemStack>... equipment) {
         this.id = id;
         this.skin = skin;
         this.uuid = uuid;
@@ -72,6 +63,7 @@ public class NPC {
         }
         this.shown = shown;
         this.persistent = persistent;
+        this.equipmentList.addAll(Arrays.asList(equipment));
     }
 
     public void spawnForPlayer(Player player) {
@@ -79,6 +71,7 @@ public class NPC {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(this.entityPlayer));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityMetadata(this.entityPlayer.getId(), this.watcher, true));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityHeadRotation(this.entityPlayer, (byte) ((this.location.getYaw() * 256.0F) / 360.0F)));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityEquipment(this.entityPlayer.getId(), this.equipmentList));
     }
 
     public void despawnForPlayer(Player player) {
@@ -133,6 +126,10 @@ public class NPC {
 
     public boolean isPersistent() {
         return this.persistent;
+    }
+
+    public GameProfile getGameProfile() {
+        return this.gameProfile;
     }
 
 }

@@ -1,6 +1,9 @@
 package com.gmail.excel8392.npclib;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.EnumItemSlot;
+import net.minecraft.server.v1_16_R3.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -66,9 +69,9 @@ public class NPCLibAPI {
      * @param skin - skin for the NPC
      * @param persistent - whether this NPC will be saved after restarts or not
      */
-    public static NPC createNPC(Location location, NPCSkin skin, String name, boolean nameShown, boolean persistent) {
+    public static NPC createNPC(Location location, NPCSkin skin, String name, boolean nameShown, boolean persistent, Pair<EnumItemSlot, ItemStack>... equipment) {
         Integer id = NPCLib.getNextId();
-        NPC npc = new NPC(location, skin, id, UUID.randomUUID().toString(), name, nameShown,  true, persistent);
+        NPC npc = new NPC(location, skin, id, UUID.randomUUID().toString(), name, nameShown,  true, persistent, equipment);
         if (persistent) {
             NPCLoader.saveNPC(npc, NPCLib.getFileConfig());
         }
@@ -90,11 +93,11 @@ public class NPCLibAPI {
      * @param cachedSkinUUID - UUID of cached skin for the NPC
      * @param persistent - whether this NPC will be saved after restarts or not
      */
-    public static NPC createNPC(Location location, UUID cachedSkinUUID, String name, boolean nameShown, boolean persistent) {
+    public static NPC createNPC(Location location, UUID cachedSkinUUID, String name, boolean nameShown, boolean persistent, Pair<EnumItemSlot, ItemStack>... equipment) {
         if (!NPCLib.getCachedSkins().containsKey(cachedSkinUUID)) {
             throw new IllegalArgumentException("Cached Skin UUID has not been cached! Either manually cache it through the API, or enable automatic player skin caching!");
         }
-        return createNPC(location, NPCLib.getCachedSkins().get(cachedSkinUUID), name, nameShown, persistent);
+        return createNPC(location, NPCLib.getCachedSkins().get(cachedSkinUUID), name, nameShown, persistent, equipment);
     }
 
     /**
