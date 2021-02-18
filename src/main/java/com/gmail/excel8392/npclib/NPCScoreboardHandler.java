@@ -44,8 +44,10 @@ public class NPCScoreboardHandler implements Listener {
     }
 
     public static void hideNPCNamesForPlayer(Player player) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutScoreboardTeam(team, 0));
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutScoreboardTeam(team, npcNames, 3));
+        if (npcNames.size() > 0) {
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutScoreboardTeam(team, 0));
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutScoreboardTeam(team, npcNames, 3));
+        }
     }
 
 }

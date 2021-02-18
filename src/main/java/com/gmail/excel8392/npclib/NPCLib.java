@@ -45,7 +45,6 @@ public class NPCLib extends JavaPlugin {
             Bukkit.getScheduler().runTask(instance, () -> {
                 NPCLoader.loadNPCs(config);
                 NPCScoreboardHandler.initScoreboard();
-
                 Bukkit.getScheduler().scheduleAsyncRepeatingTask(NPCLib.this, () -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (NPCHandler.hasLoadedDataForPlayer(player)) {
@@ -81,11 +80,9 @@ public class NPCLib extends JavaPlugin {
     }
 
     public static void updateNPCs() {
-        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                NPCHandler.updateNPCsForPlayer(player);
-            }
-        });
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            NPCHandler.updateNPCsForPlayer(player);
+        }
     }
 
     public static Map<Integer, NPC> getNPCs() {

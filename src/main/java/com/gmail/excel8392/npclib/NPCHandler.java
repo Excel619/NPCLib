@@ -1,12 +1,13 @@
 package com.gmail.excel8392.npclib;
 
-import com.gmail.excel8392.gridlib.GridBounds;
-import com.gmail.excel8392.gridlib.MultiWorldGrid;
-import com.gmail.excel8392.gridlib.WorldGrid;
+import com.gmail.excel8392.npclib.grid.GridBounds;
+import com.gmail.excel8392.npclib.grid.MultiWorldGrid;
+import com.gmail.excel8392.npclib.grid.WorldGrid;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -54,7 +55,7 @@ public class NPCHandler implements Listener {
     }
 
     public static void updateNPCsForPlayer(Player player) {
-        Set<NPC> surrounding = grid.getSurroundingElements(player.getLocation());
+        Set<NPC> surrounding = grid.getSurroundingElements(player.getLocation(), (short) 2);
         for (Map.Entry<NPC, Boolean> entry : loadedNPCs.get(player).entrySet()) {
             if (entry.getValue()) {
                 if ((!surrounding.contains(entry.getKey())) || (!entry.getKey().isShown())) {
@@ -85,7 +86,7 @@ public class NPCHandler implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent event) {
         loadedNPCs.remove(event.getPlayer());
         if (!NPCLib.shouldCacheSkins()) {

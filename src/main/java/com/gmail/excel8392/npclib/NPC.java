@@ -64,6 +64,8 @@ public class NPC {
         this.shown = shown;
         this.persistent = persistent;
         this.equipmentList.addAll(Arrays.asList(equipment));
+        ((CraftServer) Bukkit.getServer()).getServer().getPlayerList().players.remove(this.entityPlayer);
+        this.entityPlayer.getBukkitEntity().setPlayerListName("");
     }
 
     public void spawnForPlayer(Player player) {
@@ -72,9 +74,11 @@ public class NPC {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityMetadata(this.entityPlayer.getId(), this.watcher, true));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityHeadRotation(this.entityPlayer, (byte) ((this.location.getYaw() * 256.0F) / 360.0F)));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityEquipment(this.entityPlayer.getId(), this.equipmentList));
+        Bukkit.getScheduler().runTaskLater(NPCLib.getInstance(), () -> ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, this.entityPlayer)), 5L);
     }
 
     public void despawnForPlayer(Player player) {
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, this.entityPlayer));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(this.entityPlayer.getId()));
     }
 

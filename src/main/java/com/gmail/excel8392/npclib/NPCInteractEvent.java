@@ -8,12 +8,14 @@ public class NPCInteractEvent extends Event {
 
     private final NPC npc;
     private final Player player;
+    private final NPCInteractType interactType;
 
     private static final HandlerList handlers = new HandlerList();
 
-    public NPCInteractEvent(NPC npc, Player player) {
+    public NPCInteractEvent(NPC npc, Player player, NPCInteractType interactType) {
         this.npc = npc;
         this.player = player;
+        this.interactType = interactType;
     }
 
     public HandlerList getHandlers() {
@@ -30,6 +32,10 @@ public class NPCInteractEvent extends Event {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public NPCInteractType getInteractType() {
+        return this.interactType;
     }
 
 }

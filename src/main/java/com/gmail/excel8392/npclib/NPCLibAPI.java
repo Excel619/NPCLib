@@ -170,6 +170,9 @@ public class NPCLibAPI {
     public static void deleteNPC(Integer id) {
         if (NPCLib.getNPCs().containsKey(id)) {
             NPC npc = NPCLib.getNPCs().get(id);
+            npc.setShown(false);
+            NPCLib.updateNPCs();
+            npc.delete();
             NPCLib.getNPCs().remove(id);
             NPCLib.getNPCEntities().remove(npc.getEntityPlayer());
             NPCHandler.removeNPCForPlayers(npc);
@@ -177,9 +180,9 @@ public class NPCLibAPI {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 NPCScoreboardHandler.hideNPCNamesForPlayer(player);
             }
-            npc.delete();
-            NPCLib.updateNPCs();
-            NPCLoader.deleteNPC(id, NPCLib.getFileConfig());
+            if (npc.isPersistent()) {
+                NPCLoader.deleteNPC(id, NPCLib.getFileConfig());
+            }
         } else {
             throw new IllegalArgumentException("That NPC ID does not exist!");
         }
