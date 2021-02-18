@@ -1,0 +1,5 @@
+name: NPCLib
+description: NPC Library Bukkit Plugin, By Excel#8392
+version: 1.0
+main: com.gmail.excel8392.npclib.NPCLib
+api-version: 1.13
