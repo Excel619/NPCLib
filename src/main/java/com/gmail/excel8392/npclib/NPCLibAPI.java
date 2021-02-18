@@ -66,7 +66,7 @@ public class NPCLibAPI {
      * @param skin - skin for the NPC
      * @param persistent - whether this NPC will be saved after restarts or not
      */
-    public static void createNPC(Location location, NPCSkin skin, String name, boolean nameShown, boolean persistent) {
+    public static NPC createNPC(Location location, NPCSkin skin, String name, boolean nameShown, boolean persistent) {
         Integer id = NPCLib.getNextId();
         NPC npc = new NPC(location, skin, id, UUID.randomUUID().toString(), name, nameShown,  true, persistent);
         if (persistent) {
@@ -80,6 +80,7 @@ public class NPCLibAPI {
             NPCScoreboardHandler.hideNPCNamesForPlayer(player);
         }
         NPCLib.updateNPCs();
+        return npc;
     }
 
     /**
@@ -89,11 +90,11 @@ public class NPCLibAPI {
      * @param cachedSkinUUID - UUID of cached skin for the NPC
      * @param persistent - whether this NPC will be saved after restarts or not
      */
-    public static void createNPC(Location location, UUID cachedSkinUUID, String name, boolean nameShown, boolean persistent) {
+    public static NPC createNPC(Location location, UUID cachedSkinUUID, String name, boolean nameShown, boolean persistent) {
         if (!NPCLib.getCachedSkins().containsKey(cachedSkinUUID)) {
             throw new IllegalArgumentException("Cached Skin UUID has not been cached! Either manually cache it through the API, or enable automatic player skin caching!");
         }
-        createNPC(location, NPCLib.getCachedSkins().get(cachedSkinUUID), name, nameShown, persistent);
+        return createNPC(location, NPCLib.getCachedSkins().get(cachedSkinUUID), name, nameShown, persistent);
     }
 
     /**
